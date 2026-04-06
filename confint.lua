@@ -37,6 +37,14 @@ end
 --print(bin(4, 6, 0.3))
 -- output: 0.059535
 -- which matches https://en.wikipedia.org/wiki/Binomial_distribution#Example
+local function binCDF(trials, n, p)
+    local sum = 0
+    for k = 0, trials do
+        sum = sum + bin(k, n, p)
+    end
+    return sum
+end
+
 --[[------------------------
     Binomial table 
 --------------------------]]
@@ -54,7 +62,6 @@ local function MakeBinomialTable()
             for binomindex = 1, #BinomialTableProbabilities do
                 local p = BinomialTableProbabilities[binomindex]
                 BinomialTable[n][i][p] = bin(i, n, p)
-                --print(BinomialTable[n][p][i])
             end
         end
     end
@@ -125,17 +132,9 @@ n    0.01   0.05   0.10   0.15   0.20   0.30   0.35   0.40   0.45   0.50   0.55 
 --[[--------------------------------------------------
     Distribution-free confidence interval function
 ----------------------------------------------------]]
-local function binCDF(trials, n, p)
-    local sum = 0
-    for k = 0, trials do
-        sum = sum + bin(k, n, p)
-    end
-    return sum
-end
-
 local function DistributionFreeConfidenceInterval(leftorderstatistic, rightorderstatistic, n, p)
     local confidence = binCDF(rightorderstatistic, n, p) - binCDF(leftorderstatistic, n, p)
     return confidence
 end
 
-print(DistributionFreeConfidenceInterval(3, 10, 14, 0.5))
+--print(DistributionFreeConfidenceInterval(3, 10, 14, 0.5))
