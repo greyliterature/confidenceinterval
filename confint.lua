@@ -121,3 +121,21 @@ n    0.01   0.05   0.10   0.15   0.20   0.30   0.35   0.40   0.45   0.50   0.55 
    7 1e-140 7.8125 1e-070 1.7085 1.28e- 0.0002 0.0006 0.0016 0.0037 0.0078 0.0152 0.0279 0.0490 0.0823 0.1334 0.2097 0.3205 0.4782 0.6983
 --]]
 -- Which matches https://uwf.edu/media/university-of-west-florida/colleges/cse/departments/mathematics-and-statistics/documents/student-resources/binomial-tables.pdf
+--
+--[[--------------------------------------------------
+    Distribution-free confidence interval function
+----------------------------------------------------]]
+local function binCDF(trials, n, p)
+    local sum = 0
+    for k = 0, trials do
+        sum = sum + bin(k, n, p)
+    end
+    return sum
+end
+
+local function DistributionFreeConfidenceInterval(leftorderstatistic, rightorderstatistic, n, p)
+    local confidence = binCDF(rightorderstatistic, n, p) - binCDF(leftorderstatistic, n, p)
+    return confidence
+end
+
+print(DistributionFreeConfidenceInterval(3, 10, 14, 0.5))
