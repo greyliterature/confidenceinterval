@@ -1,2 +1,2 @@
 # confidenceinterval
-make this public when finished
+Still need to do implementation in R
