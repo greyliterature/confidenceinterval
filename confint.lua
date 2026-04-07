@@ -2,7 +2,6 @@
 --write function for examples #2 and #3
 --let function estimate p instead of needing it passed
 --apply rounding rules
--- it's simpler to write in lua and then port to R
 --[[------------------------
     Non math helpers
 --------------------------]]
