@@ -136,5 +136,5 @@ local function DistributionFreeConfidenceInterval(leftorderstatistic, rightorder
     local confidence = binCDF(rightorderstatistic, n, p) - binCDF(leftorderstatistic, n, p)
     return confidence
 end
-
 --print(DistributionFreeConfidenceInterval(3, 10, 14, 0.5))
+-- output: 0.942626953125
