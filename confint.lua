@@ -1,7 +1,3 @@
---todo:
---write function for examples #2 and #3
---let function estimate p instead of needing it passed
---apply rounding rules
 --[[------------------------
     Non math helpers
 --------------------------]]
@@ -48,6 +44,19 @@ local function binCDF(trials, n, p)
     return sum
 end
 
+local function FindHighestKUnderAlpha(alpha, n, p)
+    local highest_p_value = 0
+    local highest_k = 0
+    for k = 1, n do -- This for loop is unoptimized. I cannot think of a better way of doing this right now unfortunately.
+        local p_value = binCDF(k, n, p)
+        if p_value >= highest_p_value and p_value <= alpha then --
+            highest_p_value = p_value
+            highest_k = k
+        end
+    end
+    return highest_k, highest_p_value
+end
+
 --[[------------------------
     Binomial table 
 --------------------------]]
@@ -92,7 +101,7 @@ local function PrintBinomialTable()
     end
 end
 
-PrintBinomialTable()
+--PrintBinomialTable()
 -- output: 
 --[[
 n    0.01   0.05   0.10   0.15   0.20   0.30   0.35   0.40   0.45   0.50   0.55   0.60   0.65   0.70   0.75   0.80   0.85   0.90   0.95
@@ -133,11 +142,121 @@ n    0.01   0.05   0.10   0.15   0.20   0.30   0.35   0.40   0.45   0.50   0.55 
 -- Which matches https://uwf.edu/media/university-of-west-florida/colleges/cse/departments/mathematics-and-statistics/documents/student-resources/binomial-tables.pdf
 --
 --[[--------------------------------------------------
-    Distribution-free confidence interval function
+    normal distribution math
 ----------------------------------------------------]]
-local function DistributionFreeConfidenceInterval(leftorderstatistic, rightorderstatistic, n, p)
-    local confidence = binCDF(rightorderstatistic, n, p) - binCDF(leftorderstatistic, n, p)
-    return confidence
+local function inverseerrorfunction(x) -- Based on Mike Giles' CUDA code (table 5) in https://people.maths.ox.ac.uk/gilesm/files/gems_erfinv.pdf
+    local w = -math.log((1 - x) * (1 + x))
+    local p = nil
+    if w < 5 then
+        w = w - 2.5
+        p = 2.81022636 * 10 ^ -08
+        p = 3.43273939 * 10 ^ -07 + p * w
+        p = -3.5233877 * 10 ^ -06 + p * w
+        p = -4.39150654 * 10 ^ -06 + p * w
+        p = 0.00021858087 + p * w
+        p = -0.00125372503 + p * w
+        p = -0.00417768164 + p * w
+        p = 0.246640727 + p * w
+        p = 1.50140941 + p * w
+    else
+        w = math.sqrt(w) - 3
+        p = -0.000200214257
+        p = 0.000100950558 + p * w
+        p = 0.00134934322 + p * w
+        p = -0.00367342844 + p * w
+        p = 0.00573950773 + p * w
+        p = -0.0076224613 + p * w
+        p = 0.00943887047 + p * w
+        p = 1.00167406 + p * w
+        p = 2.83297682 + p * w
+    end
+    return p * x
 end
---print(DistributionFreeConfidenceInterval(3, 10, 14, 0.5))
+
+local function errorfunction(x) -- Necessary for normalCDF formula
+    -- Uses Abromowitz & Stegun error function approximation https://personal.math.ubc.ca/%7Ecbm/aands/page_299.htm
+    -- Thank you https://math.stackexchange.com/a/321582 for linking the paper.
+    x = math.abs(x)
+    local function t()
+        local p = 0.47047
+        return 1 / (1 + p * x)
+    end
+
+    local e = math.exp(1)
+    local a_1 = 0.34802
+    local a_2 = -0.09587
+    local a_3 = 0.74785
+    return ((x < 0 and -1) or 1) * (1 - (a_1 * t() + a_2 * t() ^ 2 + a_3 * t() ^ 3) * e ^ -x ^ 2)
+end
+
+-- This is not used in the code, but kept for usefulness. I had forgotten discrete vs. continuous rules. 
+local function normaldistributionPDF(z, mew, stdev) -- https://www.investopedia.com/terms/n/normaldistribution.asp
+    local pi = math.pi
+    local e = math.exp(1)
+    return 1 / (stdev * math.sqrt(2 * pi)) * e ^ (-(1 / 2) * ((z - mew) / stdev) ^ 2)
+end
+
+-- https://en.wikipedia.org/wiki/Normal_distribution
+local function normaldistributionCDF(z, mew, stdev)
+    return 1 / 2 * (1 + errorfunction((z - mew) / (stdev * math.sqrt(2))))
+end
+
+-- https://en.wikipedia.org/wiki/Normal_distribution#Quantile_function
+-- returns left side z value given probability
+local function inversenormaldistributionCDF(p, mew, stdev)
+    --Φ^-1(p) = sqrt(2) * erf^-1(2p - 1)
+    return mew + stdev * math.sqrt(2) * inverseerrorfunction(2 * p - 1)
+end
+
+local function standardnormaldistributiontable(n)
+    for z = -n, 0, 0.01 do
+        z = math.Truncate(z, 2)
+        print(z .. " " .. normaldistributionCDF(z, 0, 1))
+    end
+
+    for z = 0, n, 0.01 do
+        z = math.Truncate(z, 2)
+        print(z .. " " .. normaldistributionCDF(z, 0, 1))
+    end
+end
+
+--standardnormaldistributiontable(4)
+-- output: a very large standard normal distribution table
+--[[--------------------------------------------------
+    Distribution-free confidence interval functions
+----------------------------------------------------]]
+local function DistributionFreeConfidenceInterval(leftorderstatistic, rightorderstatistic, n, p, alpha)
+    if istable(n) then n = table.Count(n) end
+    if leftorderstatistic and rightorderstatistic then -- Give confidence based on indices
+        local i = leftorderstatistic - 1
+        local j = rightorderstatistic - 1
+        local confidence = binCDF(j, n, p) - binCDF(i, n, p)
+        return confidence
+    else -- Give indices based on confidence
+        local a = alpha / 2 -- alpha constraint (2 tail so divide by 2) 
+        local i = select(1, FindHighestKUnderAlpha(a, n, p))
+        i = i + 1 -- left tail
+        local j = n - i + 1 -- right tail
+        return i, j
+    end
+end
+
+local function LargeSampleApproximation(n, p, alpha)
+    local zCrit = inversenormaldistributionCDF(alpha / 2, 0, 1)
+    zCrit = math.abs(zCrit) -- make it positive so that i, j are in the correct order
+    local i = n * p - zCrit * math.sqrt(n * p * (1 - p))
+    local j = n * p + zCrit * math.sqrt(n * p * (1 - p))
+    i = math.floor(i)
+    j = math.ceil(j)
+    return i, j
+end
+--LargeSampleApproximation(1, 0.5, 0.05)
+-- Example 1
+--print(DistributionFreeConfidenceInterval(4, 11, 14, 0.5))
 -- output: 0.942626953125
+-- Example 2
+--print(DistributionFreeConfidenceInterval(nil, nil, 20, 0.5, 0.05))
+-- output: 6	15
+-- Example 3
+--print(LargeSampleApproximation(150, 0.5, 0.05))
+--output: 62	88
