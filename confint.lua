@@ -200,6 +200,8 @@ local function errorfunction(x) -- Necessary for normalCDF formula
     return ((x < 0 and -1) or 1) * (1 - (a_1 * t() + a_2 * t() ^ 2 + a_3 * t() ^ 3) * e ^ -x ^ 2)
 end
 
+--print(errorfunction(1))
+--output: 0.84271685708038
 -- This is not used in the code, but kept for usefulness. I had forgotten discrete vs. continuous rules. 
 local function normaldistributionPDF(z, mew, stdev) -- https://www.investopedia.com/terms/n/normaldistribution.asp
     local pi = math.pi
