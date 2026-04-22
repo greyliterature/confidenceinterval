@@ -41,3 +41,15 @@ bin = function(k, n, p){
 ##print(bin(4, 6, 0.3))
 ## output: 0.059535
 ## which matches https://en.wikipedia.org/wiki/Binomial_distribution#Example
+
+binCDF = function(trials, n, p){
+    sum = 0
+    for (k in 0:trials){
+        sum = sum + bin(k, n, p)
+    }
+    return (sum)
+}
+
+#print(binCDF(0, 1, 0.05))
+#output: 0.95
+#which matches https://baek.math.umbc.edu/stat355/binomial.pdf
