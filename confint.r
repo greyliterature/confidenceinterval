@@ -128,3 +128,11 @@ errorfunction = function(x){ # Necessary for normalCDF formula
 
 #print(errorfunction(1))
 #output: 0.8427169
+
+normaldistributionCDF = function(z, mew, stdev){
+    return (1 / 2 * (1 + errorfunction((z - mew) / (stdev * sqrt(2)))))
+}
+
+#print(normaldistributionCDF(0.1, 0, 1))
+#output: 0.5398386
+# which matches https://math.arizona.edu/~rsims/ma464/standardnormaltable.pdf
