@@ -182,6 +182,8 @@ local function inverseerrorfunction(x) -- Based on Mike Giles' CUDA code (table 
     return p * x
 end
 
+--print(inverseerrorfunction(0.5))
+--output: 0.47693629334671
 local function errorfunction(x) -- Necessary for normalCDF formula
     -- Uses Abromowitz & Stegun error function approximation https://personal.math.ubc.ca/%7Ecbm/aands/page_299.htm
     -- Thank you https://math.stackexchange.com/a/321582 for linking the paper.
