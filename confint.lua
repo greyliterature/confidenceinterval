@@ -214,6 +214,10 @@ local function normaldistributionCDF(z, mew, stdev)
     return 1 / 2 * (1 + errorfunction((z - mew) / (stdev * math.sqrt(2))))
 end
 
+--print(normaldistributionCDF(0.1, 0, 1))
+--output: 0.53983858514846
+-- which matches https://math.arizona.edu/~rsims/ma464/standardnormaltable.pdf
+--
 -- https://en.wikipedia.org/wiki/Normal_distribution#Quantile_function
 -- returns left side z value given probability
 local function inversenormaldistributionCDF(p, mew, stdev)
