@@ -3,7 +3,7 @@
 ############################
 
 PadString = function(str, padlength, padstring){ #for binomial table formatting
-    ##str = tostring(str)
+    str = toString(str)
     stringtable = strsplit(str, "")[[1]]
     for (i in 1:max(padlength, nchar(str))){
         if (i > padlength){ 
@@ -69,3 +69,27 @@ FindHighestKUnderAlpha = function(alpha, n, p){
 #print(FindHighestKUnderAlpha(0.05, 8, 0.5))
 #output: 1.00000000 0.03515625
 #which matches n = 8, k = 1, p = 0.5 https://baek.math.umbc.edu/stat355/binomial.pdf
+
+############################
+    ##Binomial table 
+############################
+BinomialTable = c() # so that we don't have to search in it manually
+BinomialTableProbabilities = c(0.01, 0.05, 0.10, 0.15, 0.20, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95)
+MakeBinomialTable = function(){
+    for (i in 1:length(BinomialTableProbabilities)){# prevent truncating trailing zeroes
+        BinomialTableProbabilities[i] = PadString(BinomialTableProbabilities[i], 4, "0")
+    }
+
+    for (n in 2:7){
+        BinomialTable[n] = c()
+        for (i in 0:n){
+            BinomialTable[n][i] = {}
+            for (binomindex in 1:length(BinomialTableProbabilities)){
+                p = as.numeric(BinomialTableProbabilities[binomindex])
+                BinomialTable[n][i][p] = bin(i, n, p)
+            }
+        }
+    }
+}
+
+MakeBinomialTable()
