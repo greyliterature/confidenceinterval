@@ -53,3 +53,19 @@ binCDF = function(trials, n, p){
 #print(binCDF(0, 1, 0.05))
 #output: 0.95
 #which matches https://baek.math.umbc.edu/stat355/binomial.pdf
+
+FindHighestKUnderAlpha = function(alpha, n, p){
+    highest_p_value = 0
+    highest_k = 0
+    for (k in 0:n){ ## This for loop is unoptimized. I cannot think of a better way of doing this right now unfortunately.
+        p_value = binCDF(k, n, p)
+        if (p_value >= highest_p_value && p_value <= alpha){
+            highest_p_value = p_value
+            highest_k = k
+        }
+    }
+    return (c(highest_k, highest_p_value))
+}
+#print(FindHighestKUnderAlpha(0.05, 8, 0.5))
+#output: 1.00000000 0.03515625
+#which matches n = 8, k = 1, p = 0.5 https://baek.math.umbc.edu/stat355/binomial.pdf
