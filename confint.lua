@@ -15,7 +15,7 @@ local function PadString(str, padlength, padstring) -- for binomial table format
 end
 
 --print(PadString("hello", 7, "d"))
--- output: "hellod"
+-- output: "hellodd"
 --[[------------------------
     Binomial math
 --------------------------]]
