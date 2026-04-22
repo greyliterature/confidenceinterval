@@ -71,25 +71,37 @@ FindHighestKUnderAlpha = function(alpha, n, p){
 #which matches n = 8, k = 1, p = 0.5 https://baek.math.umbc.edu/stat355/binomial.pdf
 
 ############################
-    ##Binomial table 
+    ##normal distribution math
 ############################
-BinomialTable = c() # so that we don't have to search in it manually
-BinomialTableProbabilities = c(0.01, 0.05, 0.10, 0.15, 0.20, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95)
-MakeBinomialTable = function(){
-    for (i in 1:length(BinomialTableProbabilities)){# prevent truncating trailing zeroes
-        BinomialTableProbabilities[i] = PadString(BinomialTableProbabilities[i], 4, "0")
+inverseerrorfunction = function(x){ # Based on Mike Giles' CUDA code (table 5) in https://people.maths.ox.ac.uk/gilesm/files/gems_erfinv.pdf
+    w = -log((1 - x) * (1 + x))
+    p = NULL
+    if (w < 5){
+        w = w - 2.5
+        p = 2.81022636 * 10 ^ -08
+        p = 3.43273939 * 10 ^ -07 + p * w
+        p = -3.5233877 * 10 ^ -06 + p * w
+        p = -4.39150654 * 10 ^ -06 + p * w
+        p = 0.00021858087 + p * w
+        p = -0.00125372503 + p * w
+        p = -0.00417768164 + p * w
+        p = 0.246640727 + p * w
+        p = 1.50140941 + p * w
     }
-
-    for (n in 2:7){
-        BinomialTable[n] = c()
-        for (i in 0:n){
-            BinomialTable[n][i] = {}
-            for (binomindex in 1:length(BinomialTableProbabilities)){
-                p = as.numeric(BinomialTableProbabilities[binomindex])
-                BinomialTable[n][i][p] = bin(i, n, p)
-            }
-        }
+    else{
+        w = math.sqrt(w) - 3
+        p = -0.000200214257
+        p = 0.000100950558 + p * w
+        p = 0.00134934322 + p * w
+        p = -0.00367342844 + p * w
+        p = 0.00573950773 + p * w
+        p = -0.0076224613 + p * w
+        p = 0.00943887047 + p * w
+        p = 1.00167406 + p * w
+        p = 2.83297682 + p * w
     }
+    return (p * x)
 }
 
-MakeBinomialTable()
+#print(inverseerrorfunction(0.5))
+#output: 0.4769363
