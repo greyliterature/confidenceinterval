@@ -17,3 +17,14 @@ PadString = function(str, padlength, padstring){ #for binomial table formatting
 }
 #print(PadString("hello", 7, "d"))
 # output: "hellodd"
+
+############################
+    #Binomial math
+############################
+NChooseK = function(n, k){
+    return (factorial(n) / (factorial(k) * factorial(n - k)))
+    ## n! / (k!(n - k)!)
+}
+
+#print(NChooseK(3, 2))
+# output: 3
