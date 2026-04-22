@@ -24,6 +24,9 @@ local function NChooseK(n, k)
     -- n! / (k!(n - k)!)
 end
 
+--print(NChooseK(3, 2))
+-- output: 3
+--
 -- PMF of binomial distribution: https://en.wikipedia.org/wiki/Binomial_distribution#Probability_mass_function
 -- k = trials
 -- n = sample amount
@@ -250,6 +253,7 @@ local function LargeSampleApproximation(n, p, alpha)
     j = math.ceil(j)
     return i, j
 end
+
 --LargeSampleApproximation(1, 0.5, 0.05)
 -- Example 1
 --print(DistributionFreeConfidenceInterval(4, 11, 14, 0.5))
@@ -260,3 +264,4 @@ end
 -- Example 3
 --print(LargeSampleApproximation(150, 0.5, 0.05))
 --output: 62	88
+print(DistributionFreeConfidenceInterval(1, 7, 8, 0.5))
