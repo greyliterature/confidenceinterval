@@ -47,6 +47,9 @@ local function binCDF(trials, n, p)
     return sum
 end
 
+--print(binCDF(0, 1, 0.05))
+--output: 0.95
+--which matches https://baek.math.umbc.edu/stat355/binomial.pdfend
 local function FindHighestKUnderAlpha(alpha, n, p)
     local highest_p_value = 0
     local highest_k = 0
