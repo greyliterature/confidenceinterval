@@ -63,6 +63,9 @@ local function FindHighestKUnderAlpha(alpha, n, p)
     return highest_k, highest_p_value
 end
 
+--print(FindHighestKUnderAlpha(0.05, 8, 0.5))
+--output: 1	0.03515625
+--which matches n = 8, k = 1, p = 0.5 https://baek.math.umbc.edu/stat355/binomial.pdf
 --[[------------------------
     Binomial table 
 --------------------------]]
