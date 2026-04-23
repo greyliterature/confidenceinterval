@@ -136,3 +136,14 @@ normaldistributionCDF = function(z, mew, stdev){
 #print(normaldistributionCDF(0.1, 0, 1))
 #output: 0.5398386
 # which matches https://math.arizona.edu/~rsims/ma464/standardnormaltable.pdf
+#
+# https://en.wikipedia.org/wiki/Normal_distribution#Quantile_function
+# returns left side z value given probability
+inversenormaldistributionCDF = function(p, mew, stdev){
+    #Φ^-1(p) = sqrt(2) * erf^-1(2p - 1)
+    return (mew + stdev * sqrt(2) * inverseerrorfunction(2 * p - 1))
+}
+
+#print(inversenormaldistributionCDF(0.97500, 0, 1))
+#output: 1.959964
+# which nearly matches (off by 0.001) https://math.arizona.edu/~rsims/ma464/standardnormaltable.pdf
