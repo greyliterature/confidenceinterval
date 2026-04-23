@@ -147,3 +147,32 @@ inversenormaldistributionCDF = function(p, mew, stdev){
 #print(inversenormaldistributionCDF(0.97500, 0, 1))
 #output: 1.959964
 # which nearly matches (off by 0.001) https://math.arizona.edu/~rsims/ma464/standardnormaltable.pdf
+
+############################
+    ##Distribution-free confidence interval functions
+############################
+DistributionFreeConfidenceInterval = function(leftorderstatistic, rightorderstatistic, n, p, alpha){
+    if (is.list(n)){
+        n = length(n)
+    }
+    if (!is.null(leftorderstatistic) && !is.null(rightorderstatistic)){ # Give confidence based on indices
+        i = leftorderstatistic - 1
+        j = rightorderstatistic - 1
+        confidence = binCDF(j, n, p) - binCDF(i, n, p)
+        return (confidence)
+    }
+    else { # Give indices based on confidence
+        a = alpha / 2 # alpha constraint (2 tail so divide by 2) 
+        i = FindHighestKUnderAlpha(a, n, p)[1]
+        i = i + 1 # left tail
+        j = n - i + 1 # right tail
+        return (c(i, j))
+    }
+}
+
+# Example 1
+#print(DistributionFreeConfidenceInterval(4, 11, 14, 0.5))
+# output: 0.942627
+#Example 2
+#print(DistributionFreeConfidenceInterval(NULL, NULL, 20, 0.5, 0.05))
+#output: 6 15
