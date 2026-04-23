@@ -176,3 +176,17 @@ DistributionFreeConfidenceInterval = function(leftorderstatistic, rightorderstat
 #Example 2
 #print(DistributionFreeConfidenceInterval(NULL, NULL, 20, 0.5, 0.05))
 #output: 6 15
+
+LargeSampleApproximation = function(n, p, alpha){
+    zCrit = inversenormaldistributionCDF(alpha / 2, 0, 1)
+    zCrit = abs(zCrit) # make it positive so that i, j are in the correct order
+    i = n * p - zCrit * sqrt(n * p * (1 - p))
+    j = n * p + zCrit * sqrt(n * p * (1 - p))
+    i = floor(i)
+    j = ceiling(j)
+    return (c(i, j))
+}
+
+# Example 3
+#print(LargeSampleApproximation(150, 0.5, 0.05))
+#output: 62 88
