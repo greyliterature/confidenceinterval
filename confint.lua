@@ -225,6 +225,9 @@ local function inversenormaldistributionCDF(p, mew, stdev)
     return mew + stdev * math.sqrt(2) * inverseerrorfunction(2 * p - 1)
 end
 
+--print(inversenormaldistributionCDF(0.97500, 0, 1))
+--output: 1.9599639523016
+-- which nearly matches (off by 0.001) https://math.arizona.edu/~rsims/ma464/standardnormaltable.pdf
 local function standardnormaldistributiontable(n)
     for z = -n, 0, 0.01 do
         z = math.Truncate(z, 2)
