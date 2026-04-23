@@ -59,7 +59,7 @@ FindHighestKUnderAlpha = function(alpha, n, p){
     highest_k = 0
     for (k in 0:n){ ## This for loop is unoptimized. I cannot think of a better way of doing this right now unfortunately.
         p_value = binCDF(k, n, p)
-        if (p_value >= highest_p_value && p_value <= alpha){
+        if (p_value <= alpha){
             highest_p_value = p_value
             highest_k = k
         }
