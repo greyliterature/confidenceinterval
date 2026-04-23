@@ -55,7 +55,7 @@ local function FindHighestKUnderAlpha(alpha, n, p)
     local highest_k = 0
     for k = 0, n do -- This for loop is unoptimized. I cannot think of a better way of doing this right now unfortunately.
         local p_value = binCDF(k, n, p)
-        if p_value >= highest_p_value and p_value <= alpha then --
+        if p_value <= alpha then --
             highest_p_value = p_value
             highest_k = k
         end
