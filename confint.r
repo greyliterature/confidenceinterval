@@ -109,6 +109,11 @@ inverseerrorfunction = function(x){ # Based on Mike Giles' CUDA code (table 5) i
 errorfunction = function(x){ # Necessary for normalCDF formula
     # Uses Abromowitz & Stegun error function approximation https://personal.math.ubc.ca/%7Ecbm/aands/page_299.htm
     # Thank you https://math.stackexchange.com/a/321582 for linking the paper.
+    signflip = 1
+    if (x < 0){
+        signflip = -1
+    }
+
     x = abs(x)
     t = function(){
         p = 0.47047
@@ -119,10 +124,6 @@ errorfunction = function(x){ # Necessary for normalCDF formula
     a_1 = 0.34802
     a_2 = -0.09587
     a_3 = 0.74785
-    signflip = 1
-    if (x < 0){
-        signflip = -1
-    }
     return (signflip * (1 - (a_1 * t() + a_2 * t() ^ 2 + a_3 * t() ^ 3) * e ^ -x ^ 2))
 }
 
