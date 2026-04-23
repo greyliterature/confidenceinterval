@@ -187,6 +187,7 @@ end
 local function errorfunction(x) -- Necessary for normalCDF formula
     -- Uses Abromowitz & Stegun error function approximation https://personal.math.ubc.ca/%7Ecbm/aands/page_299.htm
     -- Thank you https://math.stackexchange.com/a/321582 for linking the paper.
+    local signflip = ((x < 0 and -1) or 1)
     x = math.abs(x)
     local function t()
         local p = 0.47047
@@ -197,7 +198,7 @@ local function errorfunction(x) -- Necessary for normalCDF formula
     local a_1 = 0.34802
     local a_2 = -0.09587
     local a_3 = 0.74785
-    return ((x < 0 and -1) or 1) * (1 - (a_1 * t() + a_2 * t() ^ 2 + a_3 * t() ^ 3) * e ^ -x ^ 2)
+    return signflip * (1 - (a_1 * t() + a_2 * t() ^ 2 + a_3 * t() ^ 3) * e ^ -x ^ 2)
 end
 
 --print(errorfunction(1))
